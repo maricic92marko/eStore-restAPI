@@ -54,7 +54,7 @@ router.get('/users',(req,res) =>{
     
         const queryStr ='insert into users (first_name,last_name)'
         +'values(?,?)'
-        connection().query(queryStr,[req.body.fname,req.body.lname],(err,res,fields) =>{        
+        connection1().query(queryStr,[req.body.fname,req.body.lname],(err,res,fields) =>{        
             if (err) {
             console.log('failed to insert users '+err)
             res.sendStatus(500)
