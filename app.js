@@ -25,4 +25,5 @@ app.use(router)
 
 
 app.listen(3002, () =>{
+    console.log('listeninggggg on 3002')
 })
