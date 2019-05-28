@@ -21,9 +21,9 @@ const router = require('./routes/user.js')
 app.use(router)
 
 
+const PORT = process.env.PORT || 5000
 
 
-
-app.listen(3002, () =>{
-    console.log('listeninggggg on 3002')
+app.listen(PORT, () =>{
+    console.log('listeninggggg on fuck you')
 })
