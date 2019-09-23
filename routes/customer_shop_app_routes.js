@@ -6,6 +6,7 @@ const sendMail = require('../mailer/sendmail')
 const pool = mysql.createPool({
     connectionLimit: 15,
     host:'localhost',
+    password:'',
     user:'root',
     database:'lbta_mysql'
 })
@@ -19,6 +20,7 @@ router.get('/initial_state',(req,res)=>{
     const queryStr = 'call sp_get_initial_app_state()'
     getConnection().query(queryStr,(err,rows,fields)=>{
         if (err) {
+            res.json(err)
             res.sendStatus(500)
             res.end()
             return
@@ -72,6 +74,7 @@ router.post('/product_classes',(req,res) => {
 })
 
 router.post('/createorder', (req,res) => {
+
     let  mailHtml =''
     const data = JSON.parse(JSON.stringify(req.body))
     let last_order = 0
@@ -161,9 +164,8 @@ router.post('/createorder', (req,res) => {
 
                         let mailOptions = {
                             from: store_mail,
-                            to: [email,store_mail],
+                            to: [email,'rolosistem@gmail.com'],
                             subject: store_name,
-                            text: 'Rolo Sistem',
                             html:mailHtml
                         };
 
@@ -179,7 +181,8 @@ router.post('/createorder', (req,res) => {
 })
 
 router.get('/cancel_order',(req,res)=>{
-   
+    console.log(222222222222)
+
     const connection =  getConnection()
     const queryStr ='call sp_cancel_order(?)'
     const uuid = req.query.uuid
@@ -192,12 +195,17 @@ router.get('/cancel_order',(req,res)=>{
     let store_delivery_company;
 
     getConnection().query('call sp_store_info()',(err,rows,fields) =>{
+        console.log(333333333333)
+
         if (err) {
+            console.log(44444444444)
+
             console.log(err)
 
             return
         }
         else{
+            console.log(5555555555555)
 
             store_mail = rows[0][0].store_mail;
             store_name = rows[0][0].store_name;
@@ -208,19 +216,25 @@ router.get('/cancel_order',(req,res)=>{
 
 
     connection.query(queryStr,[uuid],(err,rows,fields) =>{
+        console.log(66666666666)
+
         if (err) {
+            console.log(777777777777)
+
             res.sendStatus(500)
             res.end()
             return
         }
         else{
+            console.log(888888888888)
 
             const storno_result = rows[0][0].result
             const msg = rows[0][0].msg
             const mailText = rows[0][0].mailText
- 
+            console.log(99999999999999)
+
             if(storno_result === 1)
-            {
+            { 
             let mailOptions = {
                 from: store_mail,
                 to: [email,store_mail],
@@ -262,6 +276,30 @@ router.get('/search_products',(req,res)=>{
 
  
     router.get("/",(req, res) => {
+
+        queryStr ='call  sp_build_mail(?,?,?)'
+        getConnection().query(queryStr,[uuid,last_order,email],(err,rows,fields) =>{
+            if (err) {
+
+                res.sendStatus(500)
+                res.end()
+                return
+            }
+            else{
+                mailHtml = rows[0][0].mailHtml
+            } 
+
+            let mailOptions = {
+                from: 'rolosistem@gail.com',
+                to: 'maricic92marko@gmail',
+                subject: 'test',
+                text:'test'
+            };
+
+
+            sendMail(mailOptions)
+        })
+
         console.log('responding to root route')
         res.send("hello from ROOOT")        
     })

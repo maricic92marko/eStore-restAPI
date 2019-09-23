@@ -1,9 +1,17 @@
+
+var fs = require('fs');
+var http = require('http');
+var https = require('https');
+var privateKey  = fs.readFileSync('sslcert/server.key', 'utf8');
+var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
+
+var credentials = {key: privateKey, cert: certificate};
 const express = require('express')
 const app= express()
 const bodyParser = require('body-parser')
 const customer_app_routes = require('./routes/customer_shop_app_routes')
 require('dotenv/config')
- 
+  
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json()); 
   
@@ -11,10 +19,9 @@ app.use(bodyParser.json());
     let acces_url = [process.env.acces_url]
  
     // Website you wish to allow to connect
-    if(req.headers.origin &&  acces_url[0].indexOf(req.headers.origin) > -1)
+    if(1===1)
 {        
-
-  res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+  res.setHeader('Access-Control-Allow-Origin', '*');
 
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -36,6 +43,13 @@ app.use(bodyParser.json());
 
 //lets see how to start refactoring with router
 app.use(customer_app_routes)
-const PORT = process.env.PORT || 5000
-app.listen(PORT, () =>{
-})
+const PORThttp = process.env.PORT || 5000
+const PORThttps = process.env.PORT || 5001
+
+var httpServer = http.createServer(app);
+var httpsServer = https.createServer(credentials, app);
+
+
+httpServer.listen(PORThttp);
+httpsServer.listen(PORThttps);
+ 
