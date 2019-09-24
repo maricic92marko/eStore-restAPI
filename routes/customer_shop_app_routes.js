@@ -6,9 +6,9 @@ const sendMail = require('../mailer/sendmail')
 const pool = mysql.createPool({
     connectionLimit: 15,
     host:'localhost',
-    password:'',
-    user:'root',
-    database:'lbta_mysql'
+    password:'nD96sYYkz',
+    user:'admin',
+    database:'eStoreDB'
 })
  const getConnection = () => { 
     return pool
